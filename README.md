@@ -17,6 +17,24 @@ fgerrit will try to pull gerrit information automagically via your git config. T
 
 `export GERRIT_URL=ssh://username@gerrit.host.com:29418/yourproject`
 
+If you're like me you probably use a gerrit alias in your SSH Config so you can do: `git clone gerrit:repo` this breaks the
+default finding of a repo. As such you can work around it with a neat bash function in your bashrc:
+
+```bash
+# Utilize fgerrit
+fgerrit() {
+  local project_url="$(git config --local --get remote.origin.url)"
+  if [[ "$project_url" =~ ^gerrit:* ]]; then
+    local project_name="$(echo "$project_url" | cut -d : -f 2)"
+    git fgerrit --host "<host>" --port <port> --user "<user>" --project "$project_name" "$@"
+  else
+    git fgerrit --host "<host>" --port <port> --user "<user>" "$@"
+  fi
+}
+```
+
+Then you can run commands like: `fgerrit`, `fgerrit <id>`, and `fgerrit <id> show`.
+
 ## Usage
 It's just a git extension, just give it a try in a repo that uses gerrit. Heres a few quick examples to get you started.
 

@@ -236,7 +236,7 @@ class FGerrit(object):
         indention = '\n' + ' ' * indent
         return indention.join(
             indention.join(textwrap.wrap(v, width=text_width))
-            for v in text.split('\n')
+            for v in str(text).split('\n')
         )
 
     def print_review(self, review_id):
@@ -281,7 +281,7 @@ class FGerrit(object):
 
     def show(self, change_id):
         data = self.get_review(change_id, comments=True)[0]
-        cmd = ['git', 'fetch', 'gerrit', data['currentPatchSet']['ref']]
+        cmd = ['git', 'fetch', 'origin', data['currentPatchSet']['ref']]
         error_code = subprocess.Popen(cmd).wait()
         if error_code != 0:
             raise Exception('Error code %d from %s' % (error_code, cmd))
